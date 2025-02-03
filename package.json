@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@jnode/discord": "^1.0.15",
+    "@jnode/minecraft": "^0.0.4",
+    "@jnode/request": "^1.1.3"
+  }
+}
