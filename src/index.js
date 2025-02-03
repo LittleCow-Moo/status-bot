@@ -40,10 +40,12 @@ async function updateStatus() {
 			isOn = false;
 		}
 		
+		const ping = Date.now() - time;
+		
 		//update motd image
 		if ((lastId !== Math.round(time/600000)) && isOn) {
 			needUpdate = true;
-			motd = (await request.request('GET', `https://sr-api.sfirew.com/server/cowgl.xyz/banner/motd.png?hl=tw&v=${Math.round(time/600000)}`)).body;
+			motd = (await request.request('GET', `https://sr-api.sfirew.com/server/cowgl.xyz/banner/motd.png?hl=tw&v=${Math.round(time/600000)}&ping=false&mc_font=true`)).body;
 			lastId = Math.round(time/600000);
 		}
 		
@@ -52,7 +54,7 @@ async function updateStatus() {
 			embeds: [
 				{
 					title: 'CowGL.xyz 伺服器狀態',
-					description: isOn ? `✅ **上線中**\n上次檢查：<t:${Math.round(time/1000)}>\n玩家數：\`${status.players.online}\` / \`${status.players.max}\`` : `🛑 **離線**\n上次檢查：<t:${Math.round(time/1000)}>`,
+					description: isOn ? `✅ **上線中**\n上次檢查：<t:${Math.round(time/1000)}>\n玩家數：\`${status.players.online}\` / \`${status.players.max}\`\nPing：\`${ping}\` ms` : `🛑 **離線**\n上次檢查：<t:${Math.round(time/1000)}>`,
 					...(isOn ? { image: { url: 'attachment://motd.png' } } : {}),
 					color: isOn ? 0x70e000 : 0xef233c
 				}
