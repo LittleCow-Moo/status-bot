@@ -30,6 +30,7 @@ async function updateStatus() {
 	try {
 		//get status
 		let isOn = false;
+		let needUpdate = false;
 		let status = {};
 		const time = Date.now();
 		try {
@@ -41,6 +42,7 @@ async function updateStatus() {
 		
 		//update motd image
 		if ((lastId !== Math.round(time/600000)) && isOn) {
+			needUpdate = true;
 			motd = (await request.request('GET', `https://sr-api.sfirew.com/server/cowgl.xyz/banner/motd.png?hl=tw&v=${Math.round(time/600000)}`)).body;
 			lastId = Math.round(time/600000);
 		}
@@ -56,14 +58,16 @@ async function updateStatus() {
 				}
 			],
 			attachments: isOn ? [ { id: 0 } ] : []
-		}, isOn ? [
-			{
-				id: 0,
-				type: 'image/png',
-				name: 'motd.png',
-				data: motd
-			}
-		] : []);
+		}, isOn ? (
+			needUpdate ? [
+				{
+					id: 0,
+					type: 'image/png',
+					name: 'motd.png',
+					data: motd
+				}
+			] : undefined
+		) : []);
 	} catch (err) { console.error(err); }
 	
 	return;
