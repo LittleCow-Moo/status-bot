@@ -24,6 +24,7 @@ const mcClient = new mcje.Client('cowgl.xyz');
 //motd image
 let motd;
 let lastId;
+let lastUrl;
 
 //update status
 async function updateStatus() {
@@ -48,16 +49,16 @@ async function updateStatus() {
 		}
 		
 		//update status message
-		client.apiRequestMultipart('PATCH', `/channels/${config.channelId}/messages/${config.messageId}`, {
+		const res = (await client.apiRequestMultipart('PATCH', `/channels/${config.channelId}/messages/${config.messageId}`, {
 			embeds: [
 				{
 					title: 'CowGL.xyz 伺服器狀態',
 					description: isOn ? `✅ **上線中**\n上次檢查：<t:${Math.round(time/1000)}>\n玩家數：\`${status.players.online}\` / \`${status.players.max}\`` : `🛑 **離線**\n上次檢查：<t:${Math.round(time/1000)}>`,
-					...(isOn ? { image: { url: 'attachment://motd.png' } } : {}),
+					...(isOn ? { image: { url: needUpdate ? 'attachment://motd.png' : lastUrl } } : {}),
 					color: isOn ? 0x70e000 : 0xef233c
 				}
 			],
-			attachments: isOn ? [ { id: 0 } ] : []
+			attachments: isOn ? (needUpdate ? [ { id: 0 } ] : []) : []
 		}, isOn ? (
 			needUpdate ? [
 				{
@@ -67,7 +68,11 @@ async function updateStatus() {
 					data: motd
 				}
 			] : undefined
-		) : []);
+		) : [])).json();
+		
+		if (needUpdate && isOn) {
+			lastUrl = res.embeds[0].image.url;
+		}
 	} catch (err) { console.error(err); }
 	
 	return;
