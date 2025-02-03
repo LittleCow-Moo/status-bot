@@ -24,7 +24,6 @@ const mcClient = new mcje.Client('cowgl.xyz');
 //motd image
 let motd;
 let lastId;
-let lastUrl;
 
 //update status
 async function updateStatus() {
@@ -54,25 +53,19 @@ async function updateStatus() {
 				{
 					title: 'CowGL.xyz 伺服器狀態',
 					description: isOn ? `✅ **上線中**\n上次檢查：<t:${Math.round(time/1000)}>\n玩家數：\`${status.players.online}\` / \`${status.players.max}\`` : `🛑 **離線**\n上次檢查：<t:${Math.round(time/1000)}>`,
-					...(isOn ? { image: { url: needUpdate ? 'attachment://motd.png' : lastUrl } } : {}),
+					...(isOn ? { image: { url: 'attachment://motd.png' } } : {}),
 					color: isOn ? 0x70e000 : 0xef233c
 				}
 			],
-			attachments: isOn ? (needUpdate ? [ { id: 0 } ] : []) : []
-		}, isOn ? (
-			needUpdate ? [
-				{
-					id: 0,
-					type: 'image/png',
-					name: 'motd.png',
-					data: motd
-				}
-			] : undefined
-		) : [])).json();
-		
-		if (needUpdate && isOn) {
-			lastUrl = res.embeds[0].image.url;
-		}
+			attachments: isOn ? [{ id: 0 }] : []
+		}, isOn ? [
+			{
+				id: 0,
+				type: 'image/png',
+				name: 'motd.png',
+				data: motd
+			}
+		] : [])).json();
 	} catch (err) { console.error(err); }
 	
 	return;
