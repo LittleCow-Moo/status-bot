@@ -39,14 +39,12 @@ async function updateStatus() {
 			isOn = false;
 		}
 		
-		const ping = Date.now() - time;
-		
 		//update status message
 		const res = (await client.apiRequestMultipart('PATCH', `/channels/${config.channelId}/messages/${config.messageId}`, {
 			embeds: [
 				{
 					title: 'CowGL.xyz 伺服器狀態',
-					description: isOn ? `✅ **上線中**\n上次檢查：<t:${Math.round(time/1000)}>\n玩家數：\`${status.players.online}\` / \`${status.players.max}\`\nPing：\`${ping}\` ms` : `🛑 **離線**\n上次檢查：<t:${Math.round(time/1000)}>`,
+					description: isOn ? `✅ **上線中**\n上次檢查：<t:${Math.round(time/1000)}>\n玩家數：\`${status.players.online}\` / \`${status.players.max}\`\nPing：\`${status.ping}\` ms` : `🛑 **離線**\n上次檢查：<t:${Math.round(time/1000)}>`,
 					...(isOn ? { image: { url: `https://sr-api.sfirew.com/server/cowgl.xyz/banner/motd.png?hl=tw&v=${Math.round(time/600000)}&ping=false&mc_font=true` } } : {}),
 					color: isOn ? 0x70e000 : 0xef233c
 				}

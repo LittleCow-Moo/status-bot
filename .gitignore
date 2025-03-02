@@ -130,3 +130,4 @@ dist
 .pnp.*
 src/config.json
 package-lock.json
+.DS_Store
